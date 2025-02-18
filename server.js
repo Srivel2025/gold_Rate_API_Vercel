@@ -9,7 +9,7 @@ app.use(express.json());
 app.use(cors());
 
 // ✅ Connect to MongoDB
-mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
+mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true, serverSelectionTimeoutMS: 5000 })
   .then(() => console.log('✅ MongoDB Connected'))
   .catch(err => console.error('❌ MongoDB Connection Error:', err));
 
@@ -47,7 +47,7 @@ const verifyToken = (req, res, next) => {
 // ✅ Get Latest Gold Rate API
 app.get('/gold-rate', async (req, res) => {
   try {
-    const latestRate = await GoldRate.findOne().sort({ updated_at: -1 });
+    const latestRate = await GoldRate.findOne().sort({ updated_at: -1 }).maxTimeMS(5000);
     res.json(latestRate || {});
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -88,4 +88,9 @@ app.get('/version', (req, res) => {
 //const PORT = process.env.PORT || 3000;
 //app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
 
+// ✅ Start Server Locally (Vercel will handle it in production)
+if (process.env.NODE_ENV !== 'production') {
+  const PORT = process.env.PORT || 3000;
+  app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
+}
 module.exports = app;
