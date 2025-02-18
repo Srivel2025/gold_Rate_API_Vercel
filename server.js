@@ -30,6 +30,24 @@ if (!staticToken) {
     process.exit(1); // Stop execution if the token is missing
 }
 
+// Predefined credentials for the admin
+const adminCredentials = {
+  username: 'Srivel',
+  password: 'Srivel@1997', // Ensure this is secure in a real app
+};
+
+// ✅ Login Route (Authenticate with predefined credentials)
+app.post('/login', (req, res) => {
+  const { username, password } = req.body;
+
+  // Check if the credentials match the predefined ones
+  if (username === adminCredentials.username && password === adminCredentials.password) {
+    const token = jwt.sign({ username: adminCredentials.username }, staticToken, { expiresIn: '1y' });
+    return res.json({ token });
+  }
+
+  return res.status(401).json({ message: '❌ Invalid credentials' });
+});
 // ✅ Middleware to Verify Static JWT
 const verifyToken = (req, res, next) => {
   const token = req.headers['authorization']?.split(' ')[1];
@@ -83,10 +101,6 @@ app.post('/update-rate', verifyToken, async (req, res) => {
 app.get('/version', (req, res) => {
   res.json({ version: "1.1.0" }); // Change when updating the app
 });
-
-// ✅ Start Server
-//const PORT = process.env.PORT || 3000;
-//app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
 
 // ✅ Start Server Locally (Vercel will handle it in production)
 if (process.env.NODE_ENV !== 'production') {
