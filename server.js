@@ -50,16 +50,18 @@ app.post('/login', (req, res) => {
 });
 // ✅ Middleware to Verify Static JWT
 const verifyToken = (req, res, next) => {
-  const token = req.headers['authorization']?.split(' ')[1];
+  const token = req.headers.authorization?.split(' ')[1];
+  console.log("Received Token:", token);
 
-  if (!token) return res.status(403).json({ message: '❌ No token provided' });
+  if (!token) return res.status(401).json({ message: 'Unauthorized : ❌ No token provided' });
 
   if (token === staticToken) {
     req.user = { username: "Srivel" };
     return next();
+  }else{
+    return res.status(403).json({ message: 'Unauthorized : ❌ Invalid token' });
   }
-
-  return res.status(401).json({ message: '❌ Unauthorized' });
+  
 };
 
 // ✅ Get Latest Gold Rate API
@@ -99,7 +101,7 @@ app.post('/update-rate', verifyToken, async (req, res) => {
 
 // ✅ Version Check API
 app.get('/version', (req, res) => {
-  res.json({ version: "1.1.0" }); // Change when updating the app
+  res.json({ version: "1.0.0" }); // Change when updating the app
 });
 
 // ✅ Start Server Locally (Vercel will handle it in production)
