@@ -44,7 +44,8 @@ app.post('/login', (req, res) => {
   // Check if the credentials match the predefined ones
   if (username === adminCredentials.username && password === adminCredentials.password) {
     const token = jwt.sign({ username: adminCredentials.username }, staticToken, { expiresIn: '1y' });
-    return res.json({ token });
+    return console.log("Login Successful with ", token) && res.json({ token })
+
   }
 
   return res.status(401).json({ message: '❌ Invalid credentials' });
@@ -58,11 +59,12 @@ const verifyToken = (req, res, next) => {
 
   if (token === staticToken) {
     req.user = { username: "Srivel" };
+    console.log("User & Token verified:", req.user);
     return next();
   }else{
-    return res.status(403).json({ message: 'Unauthorized : ❌ Invalid token' });
+    return console.log("Verify Token Error:", res.error) && res.status(403).json({ message: 'Unauthorized : ❌ Invalid token' });
   }
-  
+
 };
 
 // ✅ Get Latest Gold Rate API
@@ -70,6 +72,7 @@ app.get('/gold-rate', async (req, res) => {
   try {
     const latestRate = await GoldRate.findOne().sort({ updated_at: -1 }).maxTimeMS(5000);
     res.json(latestRate || {});
+    console.log("Gold rates fetched successfully");
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
@@ -94,6 +97,7 @@ app.post('/update-rate', verifyToken, async (req, res) => {
     const newRate = new GoldRate({ buy, sell });
     await newRate.save();
     res.json({ message: '✅ Rate Updated Successfully' });
+    console.log("New rates inserted successfully");
 
   } catch (err) {
     res.status(500).json({ error: err.message });
