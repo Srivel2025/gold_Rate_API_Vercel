@@ -18,7 +18,8 @@ const goldRateSchema = new mongoose.Schema({
   buy: Number,
   sell: Number,
   updated_at: { type: Date, default: Date.now }
-});
+},
+{ versionKey: false });
 const GoldRate = mongoose.model('GoldRate', goldRateSchema);
 
 // ✅ Load Predefined JWT from .env
