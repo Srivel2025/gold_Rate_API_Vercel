@@ -44,7 +44,8 @@ app.post('/login', (req, res) => {
   // Check if the credentials match the predefined ones
   if (username === adminCredentials.username && password === adminCredentials.password) {
     const token = jwt.sign({ username: adminCredentials.username }, staticToken, { expiresIn: '1y' });
-    return console.log("Login Successful with ", token) && res.json({ token })
+    console.log("Login Successful with ", token);
+    return res.json({ token })
 
   }
 
@@ -62,7 +63,8 @@ const verifyToken = (req, res, next) => {
     console.log("User & Token verified:", req.user);
     return next();
   }else{
-    return console.log("Verify Token Error:", res.error) && res.status(403).json({ message: 'Unauthorized : ❌ Invalid token' });
+    console.log("Verify Token Error:", res.error);
+    return res.status(403).json({ message: 'Unauthorized : ❌ Invalid token' });
   }
 
 };
