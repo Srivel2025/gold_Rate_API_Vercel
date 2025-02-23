@@ -94,7 +94,7 @@ app.get("/gold-rate", async (req, res) => {
 // ✅ Update Gold Rate API (Only Admin with Predefined JWT)
 app.post("/update-rate", verifyToken, async (req, res) => {
   let { buy, sell, override } = req.body; // `override` is true if user chooses "Continue"
-  override = !!override; // Ensure `override` is boolean
+  override = override === true; // Ensure `override` is boolean
   console.log(`Received Data - Buy: ${buy}, Sell: ${sell}, Override: ${override}`);
   try {
     const todayStart = new Date();
