@@ -93,8 +93,10 @@ app.post('/update-rate', verifyToken, async (req, res) => {
     // Check if a rate update exists today
     const existingRate = await GoldRate.findOne({ updated_at: { $gte: todayStart, $lte: todayEnd } });
     console.log(`Existing date is ${existingRate} and override is ${override}`);
+    console.log(`🛠️ Received Data - Buy: ${buy}, Sell: ${sell}, Override: ${override}`);
 
-    if (existingRate && override == false) {
+
+    if (existingRate && !override) {
       return res.json({ alert: "⚠️ Rate is updated for today. Choose 'Cancel' or 'Continue'." });
     }
 
