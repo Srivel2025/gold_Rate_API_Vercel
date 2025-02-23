@@ -95,7 +95,10 @@ app.post('/update-rate', verifyToken, async (req, res) => {
     console.log(`Existing date is ${existingRate} and override is ${override}`);
     console.log(`🛠️ Received Data - Buy: ${buy}, Sell: ${sell}, Override: ${override}`);
 
-
+    // ✅ Ensure `override` is a boolean
+    override = Boolean(override); 
+    console.log(`🛠️ Processed Override Value: ${override}`);
+    
     if (existingRate && !override) {
       return res.json({ alert: "⚠️ Rate is updated for today. Choose 'Cancel' or 'Continue'." });
     }
