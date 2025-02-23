@@ -107,7 +107,7 @@ app.post('/update-rate', verifyToken, async (req, res) => {
 
 // ✅ Version Check API
 app.get('/version', (req, res) => {
-  res.json({ version: "1.0.0" }); // Change when updating the app
+  res.json({ version: "1.0.1" }); // Change when updating the app
 });
 
 // ✅ Start Server Locally (Vercel will handle it in production)
