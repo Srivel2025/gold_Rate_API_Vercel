@@ -107,7 +107,7 @@ app.post("/update-rate", verifyToken, async (req, res) => {
     const existingRate = await GoldRate.findOne({
       updated_at: { $gte: todayStart, $lte: todayEnd }
     });
-    console.log(`Existing Rate is ${existingRate}`);
+    console.log(`Existing Rate is ${existingRate}, Override: ${override}`);
 
     if (existingRate && !override) {
       return res.json({
