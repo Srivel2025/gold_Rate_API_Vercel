@@ -84,18 +84,22 @@ app.post('/update-rate', verifyToken, async (req, res) => {
   const { buy, sell, override } = req.body; // `override` is true if user chooses "Continue"
 
   try {
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
+    const todayStart = new Date();
+    todayStart.setUTCHours(0, 0, 0, 0); 
+
+    const todayEnd = new Date();
+    todayEnd.setUTCHours(23, 59, 59, 999); 
 
     // Check if a rate update exists today
-    const existingRate = await GoldRate.findOne({ updated_at: { $gte: today } });
+    const existingRate = await GoldRate.findOne({ updated_at: { $gte: todayStart, $lte: todayEnd } });
+    console.log(`Existing date is ${existingRate} and override is ${override}`);
 
     if (existingRate && !override) {
       return res.json({ alert: "⚠️ Rate is updated for today. Choose 'Cancel' or 'Continue'." });
     }
 
     // Insert a new record
-    const newRate = new GoldRate({ buy, sell });
+    const newRate = new GoldRate({ buy, sell, updated_at: new Date() });
     await newRate.save();
     res.json({ message: '✅ Rate Updated Successfully' });
     console.log("New rates inserted successfully");
